@@ -3,6 +3,20 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 
+async function getHypePrice(): Promise<{ price: number; change: number } | null> {
+  try {
+    const res = await fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=hyperliquid&vs_currencies=usd&include_24hr_change=true',
+      { next: { revalidate: 120 } }
+    )
+    if (!res.ok) throw new Error('fetch failed')
+    const data = await res.json()
+    return { price: data.hyperliquid?.usd ?? 0, change: data.hyperliquid?.usd_24h_change ?? 0 }
+  } catch {
+    return null
+  }
+}
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -39,14 +53,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const hype = await getHypePrice()
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-950 text-white`}>
+        {/* HYPE price ticker bar */}
+        {hype && (
+          <div className="bg-blue-950/60 border-b border-blue-900/50 py-1 text-center text-xs">
+            <span className="text-gray-400">HYPE </span>
+            <span className="text-white font-mono font-semibold">${hype.price.toFixed(2)}</span>
+            <span className={`ml-2 font-mono ${hype.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {hype.change >= 0 ? '▲' : '▼'} {Math.abs(hype.change).toFixed(1)}%
+            </span>
+            <span className="text-gray-600 ml-3">· 24h change · powered by Hyperliquid</span>
+          </div>
+        )}
         {/* Nav */}
         <nav className="border-b border-gray-800 bg-gray-950/90 backdrop-blur sticky top-0 z-50">
           <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
