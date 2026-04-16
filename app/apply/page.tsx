@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ApplyForm } from "./ApplyForm";
+import { YieldCalculator } from "./YieldCalculator";
 
 export const metadata: Metadata = {
   title: "Apply for Investor Access — Rebel Dividends",
@@ -20,6 +21,8 @@ export default function ApplyPage() {
           We review applications within 48 hours.
         </p>
       </div>
+
+      <YieldCalculator />
 
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
         <Suspense fallback={<div className="text-center text-gray-400 py-8">Loading form...</div>}>
