@@ -102,7 +102,10 @@ export default async function RootLayout({
             <Link href="/forward" className="hover:text-gray-300">Forward</Link>
             <Link href="/daily" className="hover:text-gray-300">Daily</Link>
             <Link href="/apply" className="hover:text-gray-300">Apply</Link>
+            <Link href="/webinar-replay" className="hover:text-gray-300">Webinar</Link>
             <Link href="/legal" className="hover:text-gray-300">Legal</Link>
+            <Link href="/disclaimer" className="hover:text-gray-300">Disclaimer</Link>
+            <Link href="/privacy" className="hover:text-gray-300">Privacy</Link>
             <Link href="/risk-disclosure" className="hover:text-gray-300">Risk Disclosure</Link>
           </div>
           <p>© {new Date().getFullYear()} Rebel Dividends. All rights reserved.</p>
