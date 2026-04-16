@@ -2,9 +2,6 @@
 
 import { useState } from 'react'
 
-const SUPABASE_URL = 'https://thqimnjwbmupxyfjreta.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRocWltbmp3Ym11cHh5ZmpyZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjQ0MjgsImV4cCI6MjA5MTc0MDQyOH0.v-CRqVOxVVRktzuo1KChseRj_OKSopn0qxGn5E3Ske4'
-
 interface FormState {
   first_name: string
   last_name: string
@@ -42,31 +39,20 @@ export function ApplyForm() {
     setErrorMsg('')
 
     try {
-      // Save to Supabase leads table
-      const payload = {
-        first_name: form.first_name.trim(),
-        last_name: form.last_name.trim(),
-        email: form.email.toLowerCase().trim(),
-        phone: form.phone.trim() || null,
-        investment_amount: form.investment_amount ? parseFloat(form.investment_amount.replace(/[,$]/g, '')) : null,
-        investor_type: form.investor_type,
-        source: 'website',
-        status: 'new',
-        notes: [
-          form.how_heard ? `How heard: ${form.how_heard}` : '',
-          form.message ? `Message: ${form.message}` : '',
-        ].filter(Boolean).join(' | ') || null,
-      }
-
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+      // Route through server API (handles DB write + admin notification)
+      const res = await fetch('/api/apply', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Prefer': 'return=minimal',
-        },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: form.first_name.trim(),
+          last_name: form.last_name.trim(),
+          email: form.email.toLowerCase().trim(),
+          phone: form.phone.trim() || null,
+          investment_amount: form.investment_amount ? parseFloat(form.investment_amount.replace(/[,$]/g, '')) : null,
+          investor_type: form.investor_type,
+          how_heard: form.how_heard || null,
+          message: form.message || null,
+        }),
       })
 
       if (!res.ok) {
