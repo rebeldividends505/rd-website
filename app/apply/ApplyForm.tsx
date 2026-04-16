@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 interface FormState {
   first_name: string
@@ -28,6 +29,30 @@ export function ApplyForm() {
   const [form, setForm] = useState<FormState>(initialState)
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [utmParams, setUtmParams] = useState<Record<string, string>>({})
+  const searchParams = useSearchParams()
+
+  // Capture UTM params from URL on mount
+  useEffect(() => {
+    const params: Record<string, string> = {}
+    const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
+    utmKeys.forEach(key => {
+      const val = searchParams.get(key)
+      if (val) params[key] = val
+    })
+    // Also check sessionStorage for UTMs set on earlier page visits
+    if (typeof window !== 'undefined') {
+      utmKeys.forEach(key => {
+        if (!params[key]) {
+          const stored = sessionStorage.getItem(key)
+          if (stored) params[key] = stored
+        } else {
+          sessionStorage.setItem(key, params[key])
+        }
+      })
+    }
+    setUtmParams(params)
+  }, [searchParams])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -52,6 +77,10 @@ export function ApplyForm() {
           investor_type: form.investor_type,
           how_heard: form.how_heard || null,
           message: form.message || null,
+          // UTM attribution
+          utm_source: utmParams.utm_source || null,
+          utm_medium: utmParams.utm_medium || null,
+          utm_campaign: utmParams.utm_campaign || null,
         }),
       })
 
@@ -62,6 +91,12 @@ export function ApplyForm() {
 
       setStatus('success')
       setForm(initialState)
+      // Clear stored UTMs after successful submit
+      if (typeof window !== 'undefined') {
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(k =>
+          sessionStorage.removeItem(k)
+        )
+      }
     } catch (err: unknown) {
       console.error('Apply form error:', err)
       setStatus('error')
@@ -207,6 +242,13 @@ export function ApplyForm() {
           className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition resize-none"
         />
       </div>
+
+      {/* Hidden UTM attribution indicator (dev info) */}
+      {process.env.NODE_ENV === 'development' && Object.keys(utmParams).length > 0 && (
+        <p className="text-gray-600 text-xs">
+          UTM: {JSON.stringify(utmParams)}
+        </p>
+      )}
 
       {/* Error */}
       {status === 'error' && (

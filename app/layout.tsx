@@ -14,9 +14,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rebel Dividends — Income Investing for the Modern Era",
-  description: "Weekly dividends, DeFi yield, and passive income strategies built for serious investors.",
+  title: {
+    default: "Rebel Dividends — Income Investing for the Modern Era",
+    template: "%s — Rebel Dividends",
+  },
+  description: "Weekly dividends, DeFi yield, and passive income strategies built for serious investors. Powered by Hyperliquid protocol fees.",
   metadataBase: new URL("https://rebeldividends.com"),
+  openGraph: {
+    type: "website",
+    siteName: "Rebel Dividends",
+    title: "Rebel Dividends — Income Investing for the Modern Era",
+    description: "Weekly dividends, DeFi yield, and passive income strategies built for serious investors.",
+    url: "https://rebeldividends.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rebel Dividends — Income Investing for the Modern Era",
+    description: "Weekly dividends, DeFi yield, and passive income strategies built for serious investors.",
+  },
+  keywords: ["dividend investing", "DeFi yield", "Hyperliquid", "HYPE", "passive income", "crypto dividends", "506b"],
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

@@ -19,6 +19,9 @@ interface ApplyPayload {
   investor_type: string
   how_heard?: string
   message?: string
+  utm_source?: string | null
+  utm_medium?: string | null
+  utm_campaign?: string | null
 }
 
 async function sendAdminNotification(lead: ApplyPayload) {
@@ -67,7 +70,7 @@ async function sendAdminNotification(lead: ApplyPayload) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { first_name, last_name, email, phone, investment_amount, investor_type, how_heard, message } = body
+    const { first_name, last_name, email, phone, investment_amount, investor_type, how_heard, message, utm_source, utm_medium, utm_campaign } = body
 
     // Basic validation
     if (!first_name?.trim() || !last_name?.trim() || !email?.trim()) {
@@ -86,6 +89,9 @@ export async function POST(req: NextRequest) {
       investor_type: investor_type || 'accredited',
       source: 'website',
       status: 'new',
+      utm_source: utm_source || null,
+      utm_medium: utm_medium || null,
+      utm_campaign: utm_campaign || null,
       notes: [
         how_heard ? `How heard: ${how_heard}` : '',
         message ? `Message: ${message}` : '',

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ApplyForm } from "./ApplyForm";
 
@@ -21,7 +22,9 @@ export default function ApplyPage() {
       </div>
 
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
-        <ApplyForm />
+        <Suspense fallback={<div className="text-center text-gray-400 py-8">Loading form...</div>}>
+          <ApplyForm />
+        </Suspense>
       </div>
 
       <p className="text-gray-600 text-xs text-center mt-6 max-w-md mx-auto">
