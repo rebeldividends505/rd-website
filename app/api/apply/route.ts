@@ -15,7 +15,7 @@ interface ApplyPayload {
   last_name: string
   email: string
   phone?: string
-  investment_amount?: number | null
+  investment_amount?: string | null
   investor_type: string
   how_heard?: string
   message?: string
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       last_name: last_name.trim(),
       email: email.toLowerCase().trim(),
       phone: phone?.trim() || null,
-      investment_amount: investment_amount ? parseFloat(String(investment_amount).replace(/[,$]/g, '')) : null,
+      investment_amount: investment_amount || null,
       investor_type: investor_type || 'accredited',
       source: 'website',
       status: 'new',

@@ -75,7 +75,7 @@ export function ApplyForm() {
           last_name: form.last_name.trim(),
           email: form.email.toLowerCase().trim(),
           phone: form.phone.trim() || null,
-          investment_amount: form.investment_amount ? parseFloat(form.investment_amount.replace(/[,$]/g, '')) : null,
+          investment_amount: form.investment_amount || null,
           investor_type: form.investor_type,
           how_heard: form.how_heard || null,
           message: form.message || null,
