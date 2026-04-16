@@ -1,0 +1,242 @@
+'use client'
+
+import { useState } from 'react'
+
+const SUPABASE_URL = 'https://thqimnjwbmupxyfjreta.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRocWltbmp3Ym11cHh5ZmpyZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjQ0MjgsImV4cCI6MjA5MTc0MDQyOH0.v-CRqVOxVVRktzuo1KChseRj_OKSopn0qxGn5E3Ske4'
+
+interface FormState {
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+  investment_amount: string
+  investor_type: string
+  how_heard: string
+  message: string
+}
+
+const initialState: FormState = {
+  first_name: '',
+  last_name: '',
+  email: '',
+  phone: '',
+  investment_amount: '',
+  investor_type: 'accredited',
+  how_heard: '',
+  message: '',
+}
+
+export function ApplyForm() {
+  const [form, setForm] = useState<FormState>(initialState)
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('loading')
+    setErrorMsg('')
+
+    try {
+      // Save to Supabase leads table
+      const payload = {
+        first_name: form.first_name.trim(),
+        last_name: form.last_name.trim(),
+        email: form.email.toLowerCase().trim(),
+        phone: form.phone.trim() || null,
+        investment_amount: form.investment_amount ? parseFloat(form.investment_amount.replace(/[,$]/g, '')) : null,
+        investor_type: form.investor_type,
+        source: 'website',
+        status: 'new',
+        notes: [
+          form.how_heard ? `How heard: ${form.how_heard}` : '',
+          form.message ? `Message: ${form.message}` : '',
+        ].filter(Boolean).join(' | ') || null,
+      }
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!res.ok) {
+        const err = await res.text()
+        throw new Error(err || `HTTP ${res.status}`)
+      }
+
+      setStatus('success')
+      setForm(initialState)
+    } catch (err: unknown) {
+      console.error('Apply form error:', err)
+      setStatus('error')
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="text-center py-8">
+        <div className="text-5xl mb-4">✅</div>
+        <h2 className="text-2xl font-bold text-white mb-3">Application Received!</h2>
+        <p className="text-gray-400 mb-2">
+          Thank you for applying. We&apos;ll review your application and reach out within 48 hours.
+        </p>
+        <p className="text-gray-500 text-sm">
+          Questions? Email{' '}
+          <a href="mailto:jason@rebeldividends.com" className="text-blue-400 hover:underline">
+            jason@rebeldividends.com
+          </a>
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Name Row */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1.5">First Name *</label>
+          <input
+            type="text"
+            name="first_name"
+            value={form.first_name}
+            onChange={handleChange}
+            required
+            placeholder="Jason"
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1.5">Last Name *</label>
+          <input
+            type="text"
+            name="last_name"
+            value={form.last_name}
+            onChange={handleChange}
+            required
+            placeholder="Cox"
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+          />
+        </div>
+      </div>
+
+      {/* Email */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-1.5">Email Address *</label>
+        <input
+          type="email"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          required
+          placeholder="jason@example.com"
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+        />
+      </div>
+
+      {/* Phone */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-1.5">Phone Number</label>
+        <input
+          type="tel"
+          name="phone"
+          value={form.phone}
+          onChange={handleChange}
+          placeholder="(555) 000-0000"
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+        />
+      </div>
+
+      {/* Investment Amount */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-1.5">Investment Interest *</label>
+        <select
+          name="investment_amount"
+          value={form.investment_amount}
+          onChange={handleChange}
+          required
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition"
+        >
+          <option value="">Select an amount...</option>
+          <option value="10000">$10,000 – $24,999</option>
+          <option value="25000">$25,000 – $49,999</option>
+          <option value="50000">$50,000 – $99,999</option>
+          <option value="100000">$100,000 – $249,999</option>
+          <option value="250000">$250,000+</option>
+        </select>
+      </div>
+
+      {/* Investor Type */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-1.5">Investor Classification *</label>
+        <select
+          name="investor_type"
+          value={form.investor_type}
+          onChange={handleChange}
+          required
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition"
+        >
+          <option value="accredited">Accredited Investor (net worth $1M+ or $200K+ income)</option>
+          <option value="sophisticated">Sophisticated Investor (financial knowledge & experience)</option>
+          <option value="unknown">Not sure — please explain below</option>
+        </select>
+        <p className="text-gray-600 text-xs mt-1">
+          Accredited investor status per SEC Rule 501. Sophisticated investors subject to 35-slot cap.
+        </p>
+      </div>
+
+      {/* How Heard */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-1.5">How did you hear about us?</label>
+        <input
+          type="text"
+          name="how_heard"
+          value={form.how_heard}
+          onChange={handleChange}
+          placeholder="YouTube, referral, Twitter, etc."
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+        />
+      </div>
+
+      {/* Message */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-1.5">Anything else? (Optional)</label>
+        <textarea
+          name="message"
+          value={form.message}
+          onChange={handleChange}
+          rows={3}
+          placeholder="Questions, background, referral info..."
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition resize-none"
+        />
+      </div>
+
+      {/* Error */}
+      {status === 'error' && (
+        <div className="bg-red-950 border border-red-700 text-red-300 rounded-lg p-3 text-sm">
+          {errorMsg || 'Something went wrong. Please try again or email jason@rebeldividends.com'}
+        </div>
+      )}
+
+      {/* Submit */}
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white font-bold py-4 rounded-xl text-lg transition"
+      >
+        {status === 'loading' ? 'Submitting...' : 'Submit Application →'}
+      </button>
+    </form>
+  )
+}
