@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 interface FormState {
   first_name: string
@@ -31,6 +32,7 @@ export function ApplyForm() {
   const [errorMsg, setErrorMsg] = useState('')
   const [utmParams, setUtmParams] = useState<Record<string, string>>({})
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   // Capture UTM params from URL on mount
   useEffect(() => {
@@ -97,29 +99,12 @@ export function ApplyForm() {
           sessionStorage.removeItem(k)
         )
       }
+      router.push('/thank-you')
     } catch (err: unknown) {
       console.error('Apply form error:', err)
       setStatus('error')
       setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     }
-  }
-
-  if (status === 'success') {
-    return (
-      <div className="text-center py-8">
-        <div className="text-5xl mb-4">✅</div>
-        <h2 className="text-2xl font-bold text-white mb-3">Application Received!</h2>
-        <p className="text-gray-400 mb-2">
-          Thank you for applying. We&apos;ll review your application and reach out within 48 hours.
-        </p>
-        <p className="text-gray-500 text-sm">
-          Questions? Email{' '}
-          <a href="mailto:jason@rebeldividends.com" className="text-blue-400 hover:underline">
-            jason@rebeldividends.com
-          </a>
-        </p>
-      </div>
-    )
   }
 
   return (
@@ -265,6 +250,15 @@ export function ApplyForm() {
       >
         {status === 'loading' ? 'Submitting...' : 'Submit Application →'}
       </button>
+
+      {/* Legal footer */}
+      <p className="text-gray-600 text-xs text-center pt-2">
+        By submitting, you confirm you have read our{' '}
+        <Link href="/risk-disclosure" className="underline hover:text-gray-400" target="_blank">Risk Disclosure</Link>
+        {' '}and{' '}
+        <Link href="/legal" className="underline hover:text-gray-400" target="_blank">Legal Notices</Link>.
+        This offering is made pursuant to Rule 506(b) of Regulation D.
+      </p>
     </form>
   )
 }

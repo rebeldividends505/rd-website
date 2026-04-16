@@ -96,10 +96,20 @@ export default async function RootLayout({
 
         {/* Footer */}
         <footer className="border-t border-gray-800 mt-20 py-10 text-center text-gray-500 text-sm">
+          <div className="flex items-center justify-center gap-6 mb-4">
+            <Link href="/" className="hover:text-gray-300">Home</Link>
+            <Link href="/macro" className="hover:text-gray-300">Macro</Link>
+            <Link href="/forward" className="hover:text-gray-300">Forward</Link>
+            <Link href="/daily" className="hover:text-gray-300">Daily</Link>
+            <Link href="/apply" className="hover:text-gray-300">Apply</Link>
+            <Link href="/legal" className="hover:text-gray-300">Legal</Link>
+            <Link href="/risk-disclosure" className="hover:text-gray-300">Risk Disclosure</Link>
+          </div>
           <p>© {new Date().getFullYear()} Rebel Dividends. All rights reserved.</p>
           <p className="mt-2 text-xs max-w-xl mx-auto">
             This is not investment advice. Past performance does not guarantee future results.
-            All investments carry risk. Securities offered under Regulation D Rule 506(b).
+            All investments carry risk. Securities offered pursuant to Rule 506(b) of Regulation D.
+            No general solicitation. Accredited and sophisticated investors only.
           </p>
         </footer>
       </body>
