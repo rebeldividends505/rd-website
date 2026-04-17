@@ -83,6 +83,7 @@ export default async function RootLayout({
             <div className="flex items-center gap-6">
               <Link href="/macro" className="text-gray-400 hover:text-white text-sm transition">Macro</Link>
               <Link href="/forward" className="text-gray-400 hover:text-white text-sm transition">Forward</Link>
+              <Link href="/updates" className="text-gray-400 hover:text-white text-sm transition">Updates</Link>
               <Link href="/daily" className="text-gray-400 hover:text-white text-sm transition">Daily</Link>
               <Link href="/apply" className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
                 Apply
@@ -100,6 +101,7 @@ export default async function RootLayout({
             <Link href="/" className="hover:text-gray-300">Home</Link>
             <Link href="/macro" className="hover:text-gray-300">Macro</Link>
             <Link href="/forward" className="hover:text-gray-300">Forward</Link>
+            <Link href="/updates" className="hover:text-gray-300">Updates</Link>
             <Link href="/daily" className="hover:text-gray-300">Daily</Link>
             <Link href="/apply" className="hover:text-gray-300">Apply</Link>
             <Link href="/webinar-replay" className="hover:text-gray-300">Webinar</Link>
