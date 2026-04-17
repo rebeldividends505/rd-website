@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { sendTelegramAlert } from '@/lib/telegram'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://thqimnjwbmupxyfjreta.supabase.co'
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -118,8 +119,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to save application. Please try again.' }, { status: 500 })
     }
 
-    // Fire-and-forget admin notification (to Jason only, NOT to investor)
+    // Fire-and-forget admin notifications (email + Telegram)
     sendAdminNotification(payload as ApplyPayload).catch(() => {})
+
+    // Telegram push — instant alert to Jason
+    const typeLabel = payload.investor_type === 'sophisticated'
+      ? '⚠️ Sophisticated (506b)'
+      : payload.investor_type === 'accredited'
+      ? '✅ Accredited'
+      : payload.investor_type
+    const tgMsg = [
+      `📥 *New RD Lead*`,
+      ``,
+      `👤 ${payload.first_name} ${payload.last_name}`,
+      `📧 ${payload.email}`,
+      payload.phone ? `📞 ${payload.phone}` : null,
+      `🏷️ ${typeLabel}`,
+      payload.investment_amount ? `💰 $${payload.investment_amount}` : null,
+      ``,
+      `Review: https://rd-investor-portal.vercel.app/admin/leads`,
+    ].filter(Boolean).join('\n')
+    sendTelegramAlert(tgMsg).catch(() => {})
 
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (err) {
