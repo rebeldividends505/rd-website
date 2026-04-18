@@ -341,6 +341,10 @@ export default async function Home() {
           <Link href="/faq" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition">
             Read the FAQ
           </Link>
+          {" · "}
+          <Link href="/results" className="text-green-400 hover:text-green-300 underline underline-offset-2 transition">
+            See our track record
+          </Link>
         </p>
       </section>
     </div>
