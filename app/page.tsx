@@ -336,6 +336,12 @@ export default async function Home() {
         >
           Apply for Investor Access →
         </Link>
+        <p className="mt-4 text-sm text-gray-500">
+          Have questions first?{" "}
+          <Link href="/faq" className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition">
+            Read the FAQ
+          </Link>
+        </p>
       </section>
     </div>
   );

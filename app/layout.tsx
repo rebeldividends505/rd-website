@@ -93,6 +93,7 @@ export default async function RootLayout({
               <Link href="/updates" className="text-gray-400 hover:text-white text-sm transition">Updates</Link>
               <Link href="/calculator" className="text-gray-400 hover:text-white text-sm transition">Calculator</Link>
               <Link href="/daily" className="text-gray-400 hover:text-white text-sm transition">Daily</Link>
+              <Link href="/faq" className="text-gray-400 hover:text-white text-sm transition">FAQ</Link>
               <Link href="/apply" className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
                 Apply
               </Link>
