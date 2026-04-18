@@ -148,10 +148,10 @@ export default async function Home() {
             Apply for Access →
           </Link>
           <Link
-            href="/forward"
+            href="/calculator"
             className="border border-gray-700 hover:border-gray-500 text-gray-300 hover:text-white font-medium px-8 py-4 rounded-xl text-lg transition"
           >
-            How It Works
+            Calculate My Dividends
           </Link>
         </div>
       </section>
