@@ -51,6 +51,13 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  alternates: {
+    types: {
+      'application/rss+xml': [
+        { url: '/updates/feed.xml', title: 'Rebel Dividends — Investor Updates' },
+      ],
+    },
+  },
 };
 
 export default async function RootLayout({

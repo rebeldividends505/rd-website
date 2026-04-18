@@ -33,6 +33,18 @@ export default function UpdatesPage() {
         <p className="text-sm text-gray-600 mt-3">
           {updates.length} updates · {updates[updates.length - 1].date} → {updates[0].date}
         </p>
+        <div className="mt-4">
+          <a
+            href="/updates/feed.xml"
+            className="inline-flex items-center gap-1.5 text-orange-400 hover:text-orange-300 text-xs font-medium transition"
+            aria-label="Subscribe via RSS"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+              <path d="M3.75 3a.75.75 0 01.75.75v.75a14.25 14.25 0 0114.25 14.25h.75a.75.75 0 010 1.5h-.75A15.75 15.75 0 005.25 4.5H4.5a.75.75 0 01-.75-.75V3.75A.75.75 0 013.75 3zM3.75 9a.75.75 0 01.75.75v.75a8.25 8.25 0 018.25 8.25h.75a.75.75 0 010 1.5h-.75A9.75 9.75 0 015.25 10.5H4.5a.75.75 0 01-.75-.75V9.75A.75.75 0 013.75 9zM6 18a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
+            </svg>
+            Subscribe via RSS
+          </a>
+        </div>
       </div>
 
       {/* Update list */}
