@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function SophisticatedPage() {
+export default function InvestorQuestionnaireSophisticatedPage() {
   redirect("/apply?type=sophisticated");
 }

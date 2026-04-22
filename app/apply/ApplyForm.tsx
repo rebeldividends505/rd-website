@@ -54,6 +54,11 @@ export function ApplyForm() {
       })
     }
     setUtmParams(params)
+
+    const type = searchParams.get('type')
+    if (type === 'sophisticated' || type === 'accredited') {
+      setForm((prev) => ({ ...prev, investor_type: type }))
+    }
   }, [searchParams])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
